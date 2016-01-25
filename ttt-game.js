@@ -1,9 +1,4 @@
 
-function styleGrid(table){
-
-	
-}
-
 function createGrid(rows,columns){
 
 	var table = document.createElement("table");
@@ -16,19 +11,29 @@ function createGrid(rows,columns){
 			
 			t_cell.appendChild(document.createTextNode("X"));
 
-			t_cell.style.backgroundColor = "#ddd";
-			t_cell.style.width = "50px";
-			t_cell.style.height = "50px";
-			t_cell.style.border = "1px solid";
-			t_cell.style.align = "middle";
+			// t_cell.style.backgroundColor = "#ddd";
+			// t_cell.style.width = "50px";
+			// t_cell.style.height = "50px";
+			// t_cell.style.border = "1px solid";
+			// t_cell.style.textAlign = "center";
+			// t_cell.style.fontFamily = "verdana, sans-serif"
+
+			t_cell.className = "game-grid-cell";
 		}
 	}
 
 
+	table.className = "game-grid-view";
 
 	var element = document.getElementById("ttt");
-	styleGrid(table);
+
 	element.appendChild(table);
 
+}
+
+function setCellText(row,col,str){
+
+	var newCellValue = document.getElementsByClassName("game-grid-view")[0];
+	newCellValue = newCellValue.rows[row].cells[col].innerHTML = str;
 }
 
