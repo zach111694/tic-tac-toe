@@ -10,18 +10,9 @@ function createGrid(rows,columns){
 			var t_cell = t_row.appendChild(document.createElement("td"));
 			
 			t_cell.appendChild(document.createTextNode("X"));
-
-			// t_cell.style.backgroundColor = "#ddd";
-			// t_cell.style.width = "50px";
-			// t_cell.style.height = "50px";
-			// t_cell.style.border = "1px solid";
-			// t_cell.style.textAlign = "center";
-			// t_cell.style.fontFamily = "verdana, sans-serif"
-
 			t_cell.className = "game-grid-cell";
 		}
 	}
-
 
 	table.className = "game-grid-view";
 
