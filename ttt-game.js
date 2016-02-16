@@ -1,4 +1,3 @@
-
 function createGrid(rows,columns){
 
 	var table = document.createElement("table");
@@ -25,6 +24,7 @@ function createGrid(rows,columns){
 function setCellText(row,col,str){
 
 	var newCellValue = document.getElementsByClassName("game-grid-view")[0];
+
 	newCellValue = newCellValue.rows[row].cells[col].innerHTML = str;
 }
 
