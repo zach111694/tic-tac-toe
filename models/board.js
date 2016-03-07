@@ -78,6 +78,28 @@ Model.prototype.isDraw = function(row,col){
 	return(this.currMoves === this.maxMoves && (this.playerWin(row,col) === ""));
 };
 
+
+Model.prototype.gameStatus = function(row,col){
+	var result = null;
+	if(this.isDraw(row,col)){
+		result = 0;
+	} else if (this.playerWin(row,col) == this.players[0]){
+		result = 1;
+	} else {
+		result = -1;
+	}
+
+	return result;
+};
+
+Model.prototype.makeCopy = function(board){
+	var boardCopy = [];
+	
+	board.forEach(function(ele){
+		boardCopy.push(ele);
+	});
+};
+
 Model.prototype.makeMove = function(row,col){
 
 	// CHECK FOR VALID MOVE
@@ -90,14 +112,6 @@ Model.prototype.makeMove = function(row,col){
 		// CHECK IF MOST RECENT MOVE ACHIEVES WIN CONDITION
 		if(this.playerWin(row,col) !== ""){
 			return this.playerWin(row,col);
-		}
-		
-		// IF PLAYER TURN INDEX IS NOT EQUAL TO PLAYER ARRAY LENGTH
-		// INCREMENT INDEX, OTHERWISE IF EQUAL THEN RESET TO INDEX 0 STARTING PLAYER
-		if(this.playerTurnIndex !== this.players.length-1) {
-			this.playerTurnIndex += 1;
-		} else {
-			this.playerTurnIndex = 0;
 		}
 
 		return true;
@@ -115,7 +129,7 @@ Model.prototype.newGame = function(rows,cols){
 	this.cols = cols;
 	this.board = [];
 	this.players = [];
-	this.playerTurnIndex = 0;
+	this.playerTurnIndex = this.currMoves % this.players.length;
 	this.maxMoves = rows*cols;
 	this.currMoves = 0;
 	this.max = -Infinity;

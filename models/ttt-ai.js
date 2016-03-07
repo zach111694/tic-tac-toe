@@ -1,24 +1,4 @@
 
-function makeCopy(board){
-	var boardCopy = [];
-	for(var r in board){
-		boardCopy.push(r);
-	}
-	return boardCopy;
-}
-
-function gameStatus(row,col){
-	var result = null;
-	if(this.isDraw(row,col)){
-		result = 0;
-	} else if (this.playerWin(row,col) == this.players[0]){
-		result = 1;
-	} else {
-		result = -1;
-	}
-
-	return result;
-}
 
 
 function ai(game,maxPlayer){
@@ -37,7 +17,7 @@ function ai(game,maxPlayer){
 
 					newGame.board = boardCopy;
 
-					if(maxPlayer == true){
+					if(maxPlayer){
 						var result = ai(newGame.board,false);
 						if(result > game.max){
 							game.max = result;
@@ -48,11 +28,6 @@ function ai(game,maxPlayer){
 							game.min = result;
 						}
 					}
-
-				// COMPARE RECURSIVE CALL TO CURRENT MAX
-				// MAKE THE MOVE ON THE COPY
-				// MAKE A RECURSIVE CALL WITH THE COPIED BOARD
-				// & TOGGLE B/W MIN AND MAX PLAYER
 			}	
 			
 		}
