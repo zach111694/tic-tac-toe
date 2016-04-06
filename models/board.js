@@ -1,5 +1,4 @@
 
-
 function Model(rows,cols){
 	this.newGame(rows,cols);
 }
@@ -168,7 +167,7 @@ function ai(game,maxPlayer){
 					var boardCopy = game.makeCopy(game);
 
 					if(boardCopy.makeMove(r,c)){
-						console.log(boardCopy);
+						// console.log(boardCopy);
 						if(maxPlayer){
 							var result = ai(boardCopy,false);
 
@@ -187,7 +186,7 @@ function ai(game,maxPlayer){
 		}
 	}
 	
-	return currentBest;
+	return maxPlayer? currentBest:currentWorst;
 	
 }
 }
@@ -195,11 +194,11 @@ function ai(game,maxPlayer){
 
 var testGame = new Model(3,3);
 
-testGame.board = [["O","X","X"],
-				  ["X","X","O"],
-				  ["O","","O"]];
-testGame.currMoves = 8;
+testGame.board = [["O","","X"],
+				  ["X","X",""],
+				  ["O","",""]];
+testGame.currMoves = 5;
 // console.log(testGame.playerWin());
 
-console.log(ai(testGame,true));
+console.log(ai(testGame,false));
 
