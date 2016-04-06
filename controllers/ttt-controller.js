@@ -12,12 +12,18 @@ Model.prototype.notifyOfChange = function(type) {
   }
 };
 
-var m = new Model(); m.addChangeListener(function(event) {
+var m = new Model(); 
+m.addChangeListener(function(event) {
 	alert(event.change);
 }); // subscriber 1
 m.addChangeListener(function(event) {
 	confirm(event.change);
-}); // subscriber 1
+}); // subscriber
 
 m.notifyOfChange("moved");
 m.notifyOfChange("new game");
+
+
+
+ 
+

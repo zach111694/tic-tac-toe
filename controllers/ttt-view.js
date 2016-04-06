@@ -1,4 +1,5 @@
 
+
 function Model() {
 	this.myChangeListeners = [];
 }
@@ -30,47 +31,50 @@ function double(num, callback) {
 
 //double(5, alert);
 
+
+
 function View(model, callback) {
-  callback(tdElement, 3, 5);
+  callback(tdElement, 3, 3);
 }
 
 Model m = new Model(5,4);
 View v = new View(m, function(tdElement, row, column) {
 	tdElement.addEventListener("click", function() {
-  	
+
   });
 });
 
+function createTable(board,cb){
 
+	var t_board = document.createElement("table");
+	t_board.setAttribute("id","tttBoard");
+	t_board.setAttribute("class","game-grid-view"); 
 
+	for(var i = 0; i < board.rows; i++){
+		var t_row = document.createElement("tr");
+		board.table.appendChild(t_row);
 
-function createGrid(rows,columns){
-
-	var table = document.createElement("table");
-
-	for(i = 0; i < rows; i++){
-		var t_row = table.appendChild(document.createElement("tr"));
-
-		for(j = 0; j < columns; j++){
+		for(j = 0; j < board.cols; j++){
 			var t_cell = t_row.appendChild(document.createElement("td"));
-			
-			t_cell.appendChild(document.createTextNode("X"));
+			t_cell.appendChild(document.createTextNode(""));
 			t_cell.className = "game-grid-cell";
+
+			cb(t_cell,i,j);
 		}
 	}
 
-	table.className = "game-grid-view";
-
-	var element = document.getElementById("ttt");
-
-	element.appendChild(table);
-
+	board.table.className = "game-grid-view";
 }
 
-function setCellText(row,col,str){
 
-	var newCellValue = document.getElementsByClassName("game-grid-view")[0];
+function updateView(board){
 
-	newCellValue = newCellValue.rows[row].cells[col].innerHTML = str;
+	var table = document.getElementById("ttt_table");
+
+	for(var row = 0; row < board.rows; i++){
+		for(var col = 0; col < board.cols; j++){
+			table.rows[row].cells[col].textContent = board.getPlayer(row,col);
+		}
+	}
 }
 

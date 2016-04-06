@@ -1,4 +1,4 @@
-"use strict";
+
 
 function Model(rows,cols){
 	this.newGame(rows,cols);
@@ -9,95 +9,103 @@ Model.prototype.addPlayer = function (str){
 };
 
 Model.prototype.isValidMove = function (row,col){
-	if((row < this.rows && col < this.cols) && this.getPlayer(row,col) == "" && !(this.isDraw(row,col))){
+	if(this.getPlayer(row,col) === ""){
 		return true;
 	} else {
 		return false;
 	}
 };
 
-Model.prototype.playerWin = function(row,col){
-	
-	var winBool = false;
+Model.prototype.playerWin = function(){
 
-	// CHECKING HORIZONTALLY AT MOST RECENT MOVE ROW
+	var lastPlayer = this.players[(this.currMoves-1) % (this.players.length)];
+
+	// CHECKING CONSECUTIVE AT ROW
+	
 	var consecutiveInRow = 0;
-	for(var i = 0; i < this.cols; i++){
-		if(this.board[row][i] !== this.players[this.playerTurnIndex] ){
-			break;
+
+	for(var r = 0; r < this.rows; r++){
+		if(consecutiveInRow === 3){
+			return lastPlayer;
 		} else {
-			consecutiveInRow += 1;
+			for(var c = 0; c < this.cols; c++){
+			if(this.board[r][c] !== lastPlayer){
+				break;
+			} else {
+				consecutiveInRow += 1;
+			}
+			}
 		}
 	}
-
-	// CHECKING VERTICALLY AT MOST RECENT MOVE COLUMN
+	// CHECKING CONSECUTIVE AT COL
+	
 	var consecutiveInCol = 0;
-	for(var j = 0; j < this.rows; j++){
-		if(this.board[j][col] !== this.players[this.playerTurnIndex]){
-			break;
+
+	for(var c = 0; c < this.cols; c++){
+		if(consecutiveInCol === 3){
+			return lastPlayer;
 		} else {
-			consecutiveInCol += 1;
+			for(var r = 0; r < this.rows; r++){
+			if(this.board[r][c] !== lastPlayer){
+				break;
+			} else {
+				consecutiveInCol += 1;
+			}
+			}
 		}
 	}
 
 	// CHECK FOR DIAGONAL
 	var consecutiveInDiag = 0;
-	if(row == col){
-		for(var k = 0; k < this.rows || k < this.cols; k++){
-			if(this.board[k][k] !== this.players[this.playerTurnIndex]){
-				break;
-			} else {
-				consecutiveInDiag += 1;
-			} 
-		}
+	for(var k = 0; k < this.rows || k < this.cols; k++){
+		if(this.board[k][k] !== lastPlayer || consecutiveInCol == 3){
+			break;
+		} else {
+			consecutiveInDiag += 1;
+		} 
+	}
+
+	if(consecutiveInDiag === 3){
+		
+		return lastPlayer;
 	}
 
 	// CHECK FOR OPPOSITE DIAGONAL
-	// TODO FIND IF CONDITION FOR NON DIAGONAL RESULTS
 	var consecutiveInOppositeDiag = 0;
 	for(var l = 0; l < this.rows || l < this.cols; l++){
-		if(this.board[l][(this.cols-1)-l] !== this.players[this.playerTurnIndex]){
+		if(this.board[l][(this.cols-1)-l] !== lastPlayer || consecutiveInCol == 3){
 			break;
 		} else {
 			consecutiveInOppositeDiag += 1;
 		}
 	}
 
-	if(consecutiveInRow === 3 || consecutiveInCol === 3 || consecutiveInDiag === 3 || consecutiveInOppositeDiag === 3){
-		winBool = true;
+	if(consecutiveInOppositeDiag === 3){
+		return lastPlayer;
 	}
 
-	if(winBool){
-		return this.players[this.playerTurnIndex];
-	} else {
-		return "";
-	}
+	return "";
 };
 
-Model.prototype.isDraw = function(row,col){
-	return(this.currMoves === this.maxMoves && (this.playerWin(row,col) === ""));
+Model.prototype.isDraw = function(){
+	return(this.currMoves === this.maxMoves && (this.playerWin() === ""));
 };
 
-
-Model.prototype.gameStatus = function(row,col){
-	var result = null;
-	if(this.isDraw(row,col)){
-		result = 0;
-	} else if (this.playerWin(row,col) == this.players[0]){
-		result = 1;
-	} else {
-		result = -1;
-	}
-
-	return result;
-};
-
-Model.prototype.makeCopy = function(board){
+Model.prototype.makeCopy = function(game){
 	var boardCopy = [];
 	
-	board.forEach(function(ele){
-		boardCopy.push(ele);
+	game.board.forEach(function(ele){
+		boardCopy.push(ele.slice());
 	});
+	
+	var newGame = new Model(game.rows,game.cols);
+	newGame.board = boardCopy;
+	newGame.players = game.players;
+	newGame.currMoves = game.currMoves;
+	newGame.playerTurnIndex = game.playerTurnIndex;
+	
+
+	return newGame;
 };
 
 Model.prototype.makeMove = function(row,col){
@@ -106,12 +114,10 @@ Model.prototype.makeMove = function(row,col){
 	if(this.isValidMove(row,col)){
 
 		//SET TARGET CELL TO CURRENT PLAYER AND ADD CURRENT MOVES COUNT	
-		this.board[row][col] = this.players[this.playerTurnIndex];
-		this.currMoves += 1;
+		this.board[row][col] = this.players[(this.currMoves) % (this.players.length)];
 
-		// CHECK IF MOST RECENT MOVE ACHIEVES WIN CONDITION
-		if(this.playerWin(row,col) !== ""){
-			return this.playerWin(row,col);
+		if(this.currMoves !== this.maxMoves){
+			this.currMoves += 1;
 		}
 
 		return true;
@@ -127,18 +133,73 @@ Model.prototype.getPlayer = function(row,col){
 Model.prototype.newGame = function(rows,cols){
 	this.rows = rows;
 	this.cols = cols;
-	this.board = [];
-	this.players = [];
-	this.playerTurnIndex = this.currMoves % this.players.length;
+	this.players = ["X","O"];
 	this.maxMoves = rows*cols;
+	this.board = [];
 	this.currMoves = 0;
-	this.max = -Infinity;
-	this.min = Infinity;
-
+	this.playerTurnIndex = 0;
+	
 	for(var i = 0; i < rows; i++){
 		this.board.push([]);
-		for(var j = 0; j < columns; j++){
-			this.board[j].push("");
+		for(var j = 0; j < cols; j++){
+			this.board[i].push("");
 		}
 	}
 };
+
+function ai(game,maxPlayer){
+
+	if(game.isDraw()){
+		return 0;
+	} else if (game.playerWin() === game.players[0]){
+		return 1;
+	} else if (game.playerWin() === game.players[1]){
+		return -1;
+	} else {
+	
+	var currentBest = -Infinity;
+	var currentWorst = Infinity;
+	
+	console.log("base case not hit");
+	for(var r = 0; r < game.rows; r++){
+		for(var c = 0; c < game.cols; c++){
+			if(game.isValidMove(r,c)){
+				
+					var boardCopy = game.makeCopy(game);
+
+					if(boardCopy.makeMove(r,c)){
+						console.log(boardCopy);
+						if(maxPlayer){
+							var result = ai(boardCopy,false);
+
+							if(result > currentBest){
+								currentBest = result;
+								
+							}
+						} else {
+							var result = ai(boardCopy,true);
+							if(result < currentWorst){
+								 currentWorst = result;
+							}
+						}
+					}
+			}
+		}
+	}
+	
+	return currentBest;
+	
+}
+}
+
+
+var testGame = new Model(3,3);
+
+testGame.board = [["O","X","X"],
+				  ["X","X","O"],
+				  ["O","","O"]];
+testGame.currMoves = 8;
+// console.log(testGame.playerWin());
+
+console.log(ai(testGame,true));
+

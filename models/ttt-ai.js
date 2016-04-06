@@ -1,37 +1,51 @@
 
+function gameStatus(){
+
+	if(this.isDraw()){
+		return 0;
+	} else if (this.playerWin() == this.players[0]){
+		return 1;
+	} else if (this.playerWin() == this.players[1]){
+		return -1;
+	} else {
+		return null;
+	}
+
+};
 
 
 function ai(game,maxPlayer){
 
+	var currentBest = -Infinity;
+	var currentWorst = Infinity;
+
 	// BASE CASE
-	if(gameStatus(row,col) !== null){
-		return gameStatus(row,col);
+	if(gameStatus() !== null){
+		// make new object
+		return gameStatus();
 	}
 
 	for(var r = 0; r < game.rows; r++){
 		for(var c = 0; c < game.cols; c++){
-			if(game.isValidMove(r,c) && game.makeMove(r,c)){
-				
-					var boardCopy = makeCopy(game.board);
-					var newGame = new Model(r,c);
+			if(game.isValidMove(r,c)){
 
-					newGame.board = boardCopy;
+					var boardCopy = game.makeCopy(game);
 
-					if(maxPlayer){
-						var result = ai(newGame.board,false);
-						if(result > game.max){
-							game.max = result;
-						}
-					} else {
-						var result = ai(newGame.board,true);
-						if(result > game.min){
-							game.min = result;
+					if(boardCopy.makeMove(r,c)){
+						if(maxPlayer){
+							var result = ai(boardCopy,false);
+							if(result > currentBest){
+								currentBest = result;
+							}
+						} else {
+							var result = ai(boardCopy,true);
+							if(result < currentWorst){
+								 currentWorst = result;
+							}
 						}
 					}
 			}	
-			
 		}
-
 	}
 }
 
