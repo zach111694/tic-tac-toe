@@ -155,7 +155,7 @@ function ai(game,maxPlayer){
 	} else if (game.playerWin() === game.players[1]){
 		return -1;
 	} else {
-	
+		
 	var currentBest = -Infinity;
 	var currentWorst = Infinity;
 	
@@ -191,14 +191,70 @@ function ai(game,maxPlayer){
 }
 }
 
+/*** AI TEST ***/
+// var testGame = new Model(3,3);
+
+// testGame.board = [["O","","X"],
+// 				  ["X","X",""],
+// 				  ["O","",""]];
+// testGame.currMoves = 5;
+// // console.log(testGame.playerWin());
+
+// console.log(ai(testGame,false));
+
+function flatten(obj) {
+    var result = Object.create(obj);
+    for(var key in result) {
+    	console.log((result[key]));
+        result[key] = result[key];
+        
+    }
+    return result;
+}
+
+function mapper(gameModel){
+	// console.log(gameModel);
+	// var gameKey = JSON.stringify((gameModel));
+	
+	var gameList = [
+	{
+		key: gameModel,
+		value:{
+			parentModels://todo,
+			isAITurn: true,
+			points: 1
+		}
+	}
+	];
+	
+	return gameList.map(function(gameStr){
+		
+		// var gameModel = JSON.parse(gameStr.key);
+		
+		var newGameList = [];
+		
+		for(var r = 0; r < gameStr.key.rows; r++){
+			for(var c = 0; c < gameStr.key.cols; c++){
+				var gameStrCopy = gameStr.key.makeCopy(gameStr.key);
+				gameStrCopy.makeMove(r,c);
+				
+				newGameList.push({
+					key: JSON.stringify(gameStrCopy)
+					value:{
+						parentModels://todo,
+						isAITurn:true,
+					}
+				});
+			}
+		}
+		
+		return newGameList;
+		
+	});
+}
 
 var testGame = new Model(3,3);
 
-testGame.board = [["O","","X"],
-				  ["X","X",""],
-				  ["O","",""]];
-testGame.currMoves = 5;
-// console.log(testGame.playerWin());
+// var newGame = flatten(testGame);
 
-console.log(ai(testGame,false));
-
+console.log(mapper((testGame)));

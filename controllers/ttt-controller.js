@@ -1,3 +1,22 @@
+var newGame = document.getElementById("newGame");
+
+newGame.addEventListener("click",function(){
+
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 function Model() {
 	this.myChangeListeners = [];
 }
